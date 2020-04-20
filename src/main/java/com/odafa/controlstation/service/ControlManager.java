@@ -1,4 +1,4 @@
-package com.odafa.controlstation.droneserver;
+package com.odafa.controlstation.service;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -20,15 +20,15 @@ import lombok.extern.slf4j.Slf4j;
  
 @Slf4j
 @Component
-public class DroneCloudServer implements Runnable{
+public class ControlManager implements Runnable{
 	private static final int SERVER_PORT = 1314;
 	
 	private final ServerSocket serverSocket;
 	private final ExecutorService serverRunner;
 	
-	private final Map<String, DroneHandler> droneIdToHandler;
+	private final Map<String, ControlHandler> droneIdToHandler;
 	
-	public DroneCloudServer() {
+	public ControlManager() {
 		try {
 			serverSocket = new ServerSocket(SERVER_PORT);
 		} catch (IOException e) {
@@ -48,12 +48,12 @@ public class DroneCloudServer implements Runnable{
 					try {
 						final String droneId = new String(Utils.readNetworkMessage(clientSocket.getInputStream()));
 						
-						final DroneHandler handler = new DroneHandler(droneId, clientSocket);
+						final ControlHandler handler = new ControlHandler(droneId, clientSocket);
 						handler.activate();
 						
 						droneIdToHandler.put(droneId, handler);
 						
-						log.info("Control Connection Established with " + clientSocket.getInetAddress().toString());
+						log.info("Control Connection Established ID {}, IP {} ", droneId, clientSocket.getInetAddress().toString());
 						
 					} catch (Exception e) {
 						log.error(e.getMessage());
@@ -91,20 +91,20 @@ public class DroneCloudServer implements Runnable{
 	}
 	
 	public void sendMessageFromUserIdToDrone(String droneId, int commandCode) {
-		final DroneHandler handler = droneIdToHandler.get(droneId);
+		final ControlHandler handler = droneIdToHandler.get(droneId);
 		if(handler != null) {
 			handler.sendCommand(commandCode);
 		}
 	}
 	
 	public void sendMissionDataToDrone(String droneId, List<DataPoint> dataPoints) {
-		final DroneHandler handler = droneIdToHandler.get(droneId);
+		final ControlHandler handler = droneIdToHandler.get(droneId);
 		if(handler != null) {
 			handler.sendMissionData(dataPoints);
 		}
 	}
 	
-	public Collection<DroneHandler> getDronesHandlers(){
+	public Collection<ControlHandler> getDronesHandlers(){
 		return droneIdToHandler.values();
 	}
 }

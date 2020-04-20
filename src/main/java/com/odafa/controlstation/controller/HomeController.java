@@ -12,15 +12,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.google.gson.Gson;
-import com.odafa.controlstation.droneserver.DroneCloudServer;
-import com.odafa.controlstation.droneserver.DroneHandler;
 import com.odafa.controlstation.dto.DataPoint;
 import com.odafa.controlstation.dto.DroneInfoDTO;
+import com.odafa.controlstation.service.ControlHandler;
+import com.odafa.controlstation.service.ControlManager;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -29,7 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 public class HomeController {
 	
 	@Autowired 
-	private DroneCloudServer droneServer;
+	private ControlManager droneServer;
 	
 	@GetMapping("/")
 	public String commandCenter(Model model) {
@@ -39,6 +40,15 @@ public class HomeController {
 		// <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAKvdklCWlOEBirFt_qu5Wy2EMjKwz0EXo">
 		
 		return "index";
+	}
+	
+	@GetMapping("/v/{droneId}")
+	public String getVideoFeed(Model model, @PathVariable("droneId") String droneId) {
+		
+		model.addAttribute("localIp", getGlobalIpAddress());
+		model.addAttribute("droneId", droneId);
+		
+		return "video";
 	}
 
 	@ResponseBody
@@ -84,13 +94,13 @@ public class HomeController {
 		final List<DroneInfoDTO> drones = new ArrayList<>();
 		
 		try {
-			final Collection<DroneHandler> droneHandlers = droneServer.getDronesHandlers();
+			final Collection<ControlHandler> droneHandlers = droneServer.getDronesHandlers();
 			
 			if (droneHandlers == null) {
 				return gson.toJson(drones);
 			}
 			
-			for(DroneHandler handler : droneHandlers) {
+			for(ControlHandler handler : droneHandlers) {
 				drones.add(handler.getDroneLastStatus());
 			}
 			return gson.toJson(drones);

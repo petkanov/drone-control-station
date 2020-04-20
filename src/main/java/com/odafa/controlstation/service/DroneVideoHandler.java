@@ -1,4 +1,4 @@
-package com.odafa.controlstation.videoserver;
+package com.odafa.controlstation.service;
 
 import java.io.EOFException;
 import java.io.IOException;

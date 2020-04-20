@@ -1,9 +1,9 @@
-package com.odafa.controlstation.droneserver;
+package com.odafa.controlstation.utils;
 
 import java.util.List;
 
-import com.odafa.controlstation.droneserver.ProtoData.MissionData.Builder;
 import com.odafa.controlstation.dto.DataPoint;
+import com.odafa.controlstation.utils.ProtoData.MissionData.Builder;
 
 public class CommandBuilder {
 

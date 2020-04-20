@@ -1,4 +1,4 @@
-package com.odafa.controlstation.droneserver;
+package com.odafa.controlstation.service;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,12 +13,14 @@ import java.util.concurrent.Executors;
 
 import com.odafa.controlstation.dto.DataPoint;
 import com.odafa.controlstation.dto.DroneInfoDTO;
+import com.odafa.controlstation.utils.CommandBuilder;
+import com.odafa.controlstation.utils.ProtoData;
 import com.odafa.controlstation.utils.Utils;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class DroneHandler implements Runnable {
+public class ControlHandler implements Runnable {
 	private final String droneId;
 	private DroneInfoDTO lastStatus;
 	
@@ -30,7 +32,7 @@ public class DroneHandler implements Runnable {
 	private final BlockingQueue<byte[]> indoxMessageBuffer;
 	private final ExecutorService controller;
 	
-	public DroneHandler(String droneId, Socket clientSocket) {
+	public ControlHandler(String droneId, Socket clientSocket) {
 		this.droneSocket = clientSocket;
 		this.droneId = droneId;
 		this.indoxMessageBuffer = new ArrayBlockingQueue<>(1024);

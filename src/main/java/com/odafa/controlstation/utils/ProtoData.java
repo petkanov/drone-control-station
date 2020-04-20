@@ -1,4 +1,4 @@
-package com.odafa.controlstation.droneserver;
+package com.odafa.controlstation.utils;
 
 public final class ProtoData {
   private ProtoData() {}

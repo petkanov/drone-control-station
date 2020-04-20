@@ -8,7 +8,7 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.AbstractWebSocketHandler;
 
-import com.odafa.controlstation.videoserver.DroneVideoServer;
+import com.odafa.controlstation.service.VideoFeedManager;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -17,7 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 public class WebSocketHandler extends AbstractWebSocketHandler {
 	
 	@Autowired
-	private DroneVideoServer videoServer;
+	private VideoFeedManager videoFeedManager;
 	
 	@Override
 	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
@@ -26,6 +26,6 @@ public class WebSocketHandler extends AbstractWebSocketHandler {
 	
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage droneId) throws IOException {
-    	videoServer.setVideoWebSocketSessionForDroneId(session, droneId.getPayload());
+    	videoFeedManager.setVideoWebSocketSessionForDroneId(session, droneId.getPayload());
     } 
 }

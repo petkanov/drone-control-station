@@ -18,7 +18,7 @@ class WebSocketClient {
         var activeDroneId = this.droneId;
 
         this.webSocket.onopen = function(event) {
-            console.log('Initiating Video Stream For Active Drone ' + activeDroneId);
+            console.log('Requesting Video Stream For Drone ID ' + activeDroneId);
             this.send(activeDroneId);
         }
             
@@ -33,20 +33,15 @@ class WebSocketClient {
     }
     
     send(message) {
-        if (this.webSocket.readyState == WebSocket.OPEN) {
+        if (this.webSocket != null && this.webSocket.readyState == WebSocket.OPEN) {
             this.webSocket.send(message);
-        } else {
-            console.error('webSocket is not open. readyState=' + this.webSocket.readyState);
-        }
+        } 
     }
     
     disconnect() {
-        if (this.webSocket.readyState == WebSocket.OPEN) {
+        if (this.webSocket != null) {
             this.webSocket.close();
-            
-        } else {
-            console.error('webSocket is not open. readyState=' + this.webSocket.readyState);
-        }
+        } 
     }
 }
 
@@ -58,7 +53,7 @@ class WebSocketClient {
     		  this.lat = lat;
     		  this.lng = lng;
     		  this.map = map;
-    		  this.videoSocket = new WebSocketClient(id, localIp, 80, "/socket");
+    		  this.videoSocket = new WebSocketClient(id, localIp, 80, "/videofeed");
     		  this.posMark = new google.maps.Marker({position:{lat:lat, lng:lng}, 
     			                                     map:map, label:name+'',
     			                                     icon: 'drone.svg' });
@@ -76,6 +71,7 @@ class WebSocketClient {
     	  }
     	  
     	  startVideoFeed(){
+    		  this.videoSocket.disconnect();
     		  this.videoSocket.connect();
     	  }
 
