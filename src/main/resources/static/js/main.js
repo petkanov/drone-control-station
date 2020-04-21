@@ -352,6 +352,7 @@ class WebSocketClient {
       }
       
       
+      
       var loadDronesData = function (map, dronesMap, data) {
     	  var dronesDTOs = JSON.parse(data);
     	  
@@ -392,7 +393,7 @@ class WebSocketClient {
     	    		    
     	  			    '<div class="dronesList-content" style="position:relative;">' + 
     	  			    
-    	  			      '<img id="video'+drone.getId()+'" src="video.jpg" style="width: 100%;"  onclick="dronesAll.get(\''+droneDTO.id+'\').startVideoFeed();" > <br />' +
+    	  			      '<img id="video'+drone.getId()+'" src="video.jpg" style="width: 100%;"  onclick="dronesAll.get(\''+droneDTO.id+'\').startVideoFeed(); set_FPV_active();" > <br />' +
     	  			    
     	  			      
     	  				'<div id="ctrlPanel2" style="position: absolute; top: 56%; float: left;">'+
@@ -407,19 +408,11 @@ class WebSocketClient {
     	  				'<td> </td></tr></table></div>' +
 
 
-    	  				
-    	  				 
-    	  			    
-
-
     	  			      
-    	  				'<div id="ctrlPanel3" style="position: absolute; top: 39%;left:50px;">'+
+    	  				'<div id="ctrlPanel3" style="position: absolute; top: 35%;left:50px;">'+
     	  				'<table><tr> <td> <input class="button" id="mStart'+drone.getId()+'" type="button" value="START/PAUSE Mission" /> </td></tr> '+
     	  				'<tr> <td> <input class="button" id="mCancel'+drone.getId()+'" type="button" value="CLEAR Mission Data" /> </td></tr>' +
     	  				'</table></div>' + 
-    	  				 
-
-    	  			    
 
 
     	  			      
@@ -435,24 +428,27 @@ class WebSocketClient {
     	  				'<td> <input class="button" id="btnRRIGHT90'+drone.getId()+'" type="button" value="RIGHT90" /> </td></tr>' +
     	  				'</table></div>' +
 
-
-
-
-
-
-    	  				 
-
-
-
     	  				
     	  				
     	  				'<div id="ctrlPanel5" style="position:relative;top:-50px;">' + 
     	  				'<input class="button" id="fArm'+drone.getId()+'" type="button" value="TAKEOFF" style="width:16%;float:left;" />' +
     	  				'<input class="button" id="fDisarm'+drone.getId()+'" type="button" value="LAND"  style="width:16%;float:left;margin-left:15px;"/>' +
     	  				'<input class="button" id="mRTL'+drone.getId()+'" type="button" value="RETURN HOME"  style="width:16%;float:left;margin-left:15px;" />' +
-    	  				'<input class="button" id="fKill'+drone.getId()+'" type="button" value="Kill MOTORS"  style="width:13%;float:left;margin-left:55px;background-color:red;"/>' +
-    	  				'<input class="button" id="fActivate'+drone.getId()+'" type="button" style="width:16%;float:right;" value="DROP PACKAGE"/>' +
-    	  			    '</div></div>');
+    	  				'<input class="button" id="fActivate'+drone.getId()+'" type="button" style="width:16%;margin-left:65px;float:left;" value="DROP PACKAGE"/>' +
+    	  				'<input class="button" onclick="copyToClipboard(\'copyLink'+droneDTO.id+'\')" type="button" style="width:16%;float:right;" value="SHARE Video Feed"/>' +
+    	  				'<input type="text" size="34" style="position:relative;float:right;"  id="copyLink'+drone.getId()+'" value="http://'+localIp+'/v/'+droneDTO.id+'" />' +
+    	  				'</div>'+
+    	  			    
+    	  			    
+    	  			    '<div id="ctrlPanel6" style="position: absolute; top: 30px;left:30px;">' + 
+    	  			    '<input class="button" onclick="set_Map_active()" type="button" value="VIEW ON MAP" style="width:148px;background-color:green;opacity:0.55;"/>' +
+    	  			    '</div>'+ 
+    	  			    
+    	  			    '<div id="ctrlPanel7" style="position: absolute; top: 30px;right:30px;">' + 
+    	  			    '<input class="button" id="fKill'+drone.getId()+'" type="button" value="KILL MOTORS"  style="width:133px;background-color:red;opacity:0.55;"/>' +
+    	  			    '</div>'+ 
+    	  			    
+    	  			    '</div>');
     		     
     		     $(".dronesList").on("click", ".dronesList-header", function () {
     		        	map.setZoom(18);
@@ -481,6 +477,34 @@ class WebSocketClient {
     		     initializeDronesControls(drone.getId());
     		  }
 		  });
+      }
+      
+
+      var set_FPV_active = function() { 
+    	  $('#map').hide();
+    	  
+    	  $('.dronesList').css({"width": "100%" });
+    	  $('#ctrlPanel2').css({"position":"absolute", "top":"56%", "float":"left", "margin-top":"", "left":"", "width":"" });
+    	  $('#ctrlPanel3').css({"position":"absolute", "top":"35%", "left":"50px", "margin-top":"","float":"", "left":"", "width":"" });
+    	  $('#ctrlPanel4').css({"position":"absolute", "top":"56%", "right":"30px", "margin-top":"","float":"", "left":"", "width":"" });
+    	  
+    	  $('div[id^="ctrlPanel"]').show();
+      }
+      
+      var set_Map_active = function() {
+    	    $('#map').show();
+    	    $('#map').css({"width": "65%", "height":"950px", "position":"relative", "float":"left", "top":"0px", "left":"0px", "opacity":"1" });
+    	    
+ 	        $('#ctrlPanel1').hide();
+ 	        $('#ctrlPanel5').hide();
+ 	        $('#ctrlPanel6').hide();
+ 	        $('#ctrlPanel7').hide();
+ 	        
+ 	        $('#ctrlPanel2').css({"position":"relative","float":"left","margin-top":"25px", "left":"-25px", "width":"100%","right":"","top":"" });
+ 	        $('#ctrlPanel3').css({"position":"relative","float":"left","margin-top":"25px", "left":"-25px", "width":"100%","right":"","top":"" });
+    	    $('#ctrlPanel4').css({"position":"relative","float":"left","margin-top":"25px", "left":"-25px", "width":"100%","right":"","top":"" });
+    	    
+    	    $('.dronesList').css({"width": "35%" });
       }
       
       
@@ -566,19 +590,12 @@ class WebSocketClient {
       }
 
 
-
-      var set_FPV_active = function() {
-    	    $('#map').css({"width": "200px", "height":"200px", "position":"absolute", "top":"225px", "left":"39px", "opacity":"0.6" });
-    	    $('.dronesList').css({"width": "100%" });
-    	    $('#ctrlPanel3').css({"position":"absolute", "top":"39%", "left":"50px" });
- 	        $('div[id^="ctrlPanel"]').show();
-      }
       
-      var set_Map_active = function() {
-    	    $('#map').css({"width": "75%", "height":"650px", "position":"relative", "float":"left", "top":"0px", "left":"0px", "opacity":"1" });
- 	        $('div[id^="ctrlPanel"]').hide();
- 	        $('#ctrlPanel3').show();
-    	    $('#ctrlPanel3').css({"position":"absolute", "top":"120%", "left":"0px" });
-    	    $('.dronesList').css({"width": "24%" });
+      var copyToClipboard = function(elmId) {
+    	  var copyLink = document.getElementById(elmId);
+    	  copyLink.select();
+    	  copyLink.setSelectionRange(0, 99999);
+    	  
+    	  document.execCommand("copy");
       }
 

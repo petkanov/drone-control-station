@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="https://www.thymeleaf.org"
+	xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+<title>ODAFA - Entrance</title>
+<link rel="stylesheet" type="text/css" href="/css/main.css" />
+</head>
+<body>
+	<div th:if="${param.error}">
+		<h1 style="color: red; text-align: center;">Get out fake bastard! Go cry to mommy</h1>
+	</div>
+	<div style="width:100%;">
+		<br>
+		<form th:action="@{/login}" method="post">
+			<table style="margin:auto; margin-top:150px;">
+				<tr>
+					<td>Name:</td>
+					<td><input class="text-field" type="text" name="usr" /></td>
+				</tr>
+				<tr>
+					<td>Password:</td>
+					<td><input class="text-field" type="password" name="pswd" /></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td><input type="submit" class="button" value="Let's Fly" style="width:148px;background-color:green;opacity:0.55;" /></td>
+				</tr>
+			</table>
+		</form>
+	</div>
+</body>
+</html>

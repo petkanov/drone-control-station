@@ -82,6 +82,12 @@ nav.shift ul li a:hover:after {
   border-radius: 15px;
 }
 
+.text-field {
+  padding: 12px 20px;
+  margin: 8px 0;
+  box-sizing: border-box;
+}
+
 .button:active {
   transform: translateY(4px);
 }

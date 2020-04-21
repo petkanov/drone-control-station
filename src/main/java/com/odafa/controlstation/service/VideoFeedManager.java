@@ -85,7 +85,7 @@ public class VideoFeedManager implements Runnable {
 			droneIdSessions = droneIdToWebSocketSession.get(droneId);
 		} 
 		droneIdSessions.add(newWebSocketSession);
-		log.debug("Drone ID {} has {} active Web Socket Sessions");
+		log.debug("Drone ID {} has {} active Web Socket Sessions", droneId, droneIdSessions.size());
 	}
 
 	public boolean isServerClosed() {
