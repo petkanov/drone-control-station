@@ -242,6 +242,8 @@ class WebSocketClient {
     		  ACTIVATE_FUNCTION : 8,
     		  ARM : 9,
     		  KILL : 17,
+    		  CAMERA_UP : 22,
+    		  CAMERA_DOWN : 23,
     		  DISARM : 10,
     		  RLEFT45 : 18,
     		  RLEFT90 : 19,
@@ -375,13 +377,14 @@ class WebSocketClient {
     		     $('#infoSpeed'+droneDTO.id).val(droneDTO.speed); 
     		     $('#infoBat'+droneDTO.id).val(droneDTO.battery); 
     		  } 
-    		  else{
+    		  
+    		  else {
      			 var drone = new Drone(droneDTO.id, droneDTO.name, droneDTO.lattitude, droneDTO.longitude, map);
     		     drone.setSpeed(droneDTO.speed);
     		     drone.setAltitude(droneDTO.alt);
     		  
     		     dronesMap.set(drone.getId(), drone);
-    		  // width="770" height="601"
+
     		     $('.dronesList').append('<div droneId="'+drone.getId()+'" class="dronesList-header" id="ctrlPanel1">Drone: '+drone.getName()+
     	  			      
     	  			      '&nbsp;&nbsp; > &nbsp;&nbsp; <label>Altitude (m)&nbsp;</label><input type="text" id="infoAlt'+drone.getId()+'" size="2" value="'+droneDTO.alt+'" disabled />' +
@@ -413,22 +416,28 @@ class WebSocketClient {
     	  				'<table><tr> <td> <input class="button" id="mStart'+drone.getId()+'" type="button" value="START/PAUSE Mission" /> </td></tr> '+
     	  				'<tr> <td> <input class="button" id="mCancel'+drone.getId()+'" type="button" value="CLEAR Mission Data" /> </td></tr>' +
     	  				'</table></div>' + 
+    	  				
+    	  				
+    	  				
+    	  				'<div id="ctrlPanel8" style="position: absolute; top: 35%;right:50px;">'+
+    	  				'<table><tr> <td> <input class="button" id="cameraUP'+drone.getId()+'" type="button" value=" UP " /> </td></tr> '+
+    	  				'<tr> <td> <input class="button" id="cameraDOWN'+drone.getId()+'" type="button" value="DOWN" /> </td></tr>' +
+    	  				'</table></div>' + 
 
 
     	  			      
     	  				'<div id="ctrlPanel4" style="position: absolute; top: 56%;right:30px;">'+ 
     	  				'<table><tr> <td> <input class="button" id="btnRLEFT45'+drone.getId()+'" type="button" value="LEFT45" /> </td>' +
-    	  				'<td> <input class="button" id="btnU'+drone.getId()+'" type="button" value="UPWARD" />'+'</td> '+
+    	  				'<td> <input class="button" id="btnU'+drone.getId()+'" type="button" value="ASCEND" />'+'</td> '+
     	  				'<td> <input class="button" id="btnRRIGHT45'+drone.getId()+'" type="button" value="RIGHT45" /></td></tr>' + 
     	  				'<tr> <td> <input class="button" id="btnRL'+drone.getId()+'" type="button" value="ROTATE-L" /></td>' +
     	  				'<td> <input class="button" id="btnStopZ'+drone.getId()+'" type="button" value="STOP" /></td> ' +
     	  				'<td> <input class="button" id="btnRR'+drone.getId()+'" type="button" value="ROTATE-R" /></td> </tr>' + 
     	  				'<tr> <td> <input class="button" id="btnRLEFT90'+drone.getId()+'" type="button" value="LEFT90" /> </td>' +
-    	  				'<td> <input class="button" id="btnD'+drone.getId()+'" type="button" value="DOWN" /> </td> '+
+    	  				'<td> <input class="button" id="btnD'+drone.getId()+'" type="button" value="DESCEND" /> </td> '+
     	  				'<td> <input class="button" id="btnRRIGHT90'+drone.getId()+'" type="button" value="RIGHT90" /> </td></tr>' +
     	  				'</table></div>' +
 
-    	  				
     	  				
     	  				'<div id="ctrlPanel5" style="position:relative;top:-50px;">' + 
     	  				'<input class="button" id="fArm'+drone.getId()+'" type="button" value="TAKEOFF" style="width:16%;float:left;" />' +
@@ -456,7 +465,6 @@ class WebSocketClient {
     		        	set_FPV_active();
     		        	
     		        	if($(this).hasClass("active")){
-//    		        		client.disconnect();
     		        	     var drone = dronesAll.get( $(this).attr('droneId'), 10);
     		        	     drone.stopVideoFeed();
     		        		return;
@@ -531,6 +539,14 @@ class WebSocketClient {
           $("input[id*='fKill"+id+"']").click(function() {
           	activeDrone.sendCommand(CommandType.KILL);
           });
+          
+          $("input[id*='cameraUP"+id+"']").click(function() {
+        	  activeDrone.sendCommand(CommandType.CAMERA_UP);
+          });
+          
+          $("input[id*='cameraDOWN"+id+"']").click(function() {
+        	  activeDrone.sendCommand(CommandType.CAMERA_DOWN);
+          });
 
           $("input[id*='btnF"+id+"']").click(function() {
           	activeDrone.sendCommand(CommandType.FORWARD);
@@ -588,7 +604,6 @@ class WebSocketClient {
           	activeDrone.sendCommand(CommandType.RRIGHT90);
           });
       }
-
 
       
       var copyToClipboard = function(elmId) {

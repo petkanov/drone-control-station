@@ -48,7 +48,7 @@ public class ControlManager implements Runnable{
 					try {
 						final String droneId = new String(Utils.readNetworkMessage(clientSocket.getInputStream()));
 						
-						final ControlHandler handler = new ControlHandler(droneId, clientSocket);
+						final ControlHandler handler = new ControlHandler(this, droneId, clientSocket);
 						handler.activate();
 						
 						droneIdToHandler.put(droneId, handler);
@@ -88,6 +88,10 @@ public class ControlManager implements Runnable{
 			}
 		}
 		serverRunner.shutdown();
+	}
+	
+	public void removeControlHadlerForDroneId(String droneId) {
+		droneIdToHandler.remove(droneId);
 	}
 	
 	public void sendMessageFromUserIdToDrone(String droneId, int commandCode) {

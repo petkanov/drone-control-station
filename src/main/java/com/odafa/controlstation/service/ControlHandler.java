@@ -21,8 +21,12 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class ControlHandler implements Runnable {
+	private static final long MAX_WAIT_TIME = 10_000L;
+	
+	private final ControlManager manager;
 	private final String droneId;
 	private DroneInfoDTO lastStatus;
+	private long lastUpdateTime;
 	
 	private final Socket droneSocket;
 	
@@ -32,7 +36,8 @@ public class ControlHandler implements Runnable {
 	private final BlockingQueue<byte[]> indoxMessageBuffer;
 	private final ExecutorService controller;
 	
-	public ControlHandler(String droneId, Socket clientSocket) {
+	public ControlHandler(ControlManager manager, String droneId, Socket clientSocket) {
+		this.manager = manager;
 		this.droneSocket = clientSocket;
 		this.droneId = droneId;
 		this.indoxMessageBuffer = new ArrayBlockingQueue<>(1024);
@@ -51,7 +56,12 @@ public class ControlHandler implements Runnable {
 	public void sendCommand(int commandCode) {
 		final byte[] command = Utils.createNetworkMessage( CommandBuilder.translateCommand(commandCode));
 		this.indoxMessageBuffer.add(command);
+		
 		log.debug("Sending Code: " + commandCode);
+	}
+	
+	private boolean isMaxWaitTimeExceeded() {
+		return System.currentTimeMillis() - lastUpdateTime > MAX_WAIT_TIME;
 	}
 
 	public void sendMissionData(List<DataPoint> dataPoints) {
@@ -109,7 +119,6 @@ public class ControlHandler implements Runnable {
 
 	private void updateDroneInfo() {
 		try {
-			
 			byte[] result = Utils.readNetworkMessage(streamIn);
 			
 			final ProtoData.DroneData droneData = ProtoData.DroneData.parseFrom(result);
@@ -122,6 +131,7 @@ public class ControlHandler implements Runnable {
 					speedInKmH, droneData.getAltitude(), droneData.getVoltage(), droneData.getState(), webSocketURL, droneData.getVideoPort());
 			
 			this.lastStatus = droneDto;
+			this.lastUpdateTime = System.currentTimeMillis();
 			
 		} catch (Exception e) {
 			log.error(e.getMessage());
@@ -131,18 +141,21 @@ public class ControlHandler implements Runnable {
 	}
 
 	public DroneInfoDTO getDroneLastStatus() {
+		if (isMaxWaitTimeExceeded()) {
+			log.warn("Maximum Wait Time for Drone ID {} exceeded. Control socket closed.", droneId);
+			close();
+		}
 		return this.lastStatus;
 	}
 
 	public void close() {
 		try {
-			if (!droneSocket.isClosed()) {
-				droneSocket.close();
-			}
+			droneSocket.close();
 		} catch (Exception e) {
 			log.error(e.getMessage());
 		} finally {
-			controller.shutdown(); 
+			manager.removeControlHadlerForDroneId(droneId);
+			controller.shutdownNow(); 
 		}
 	}
 }
