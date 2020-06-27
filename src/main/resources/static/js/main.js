@@ -179,7 +179,7 @@ class WebSocketClient {
     	  }
     	  sendCommand(commandId){
     		  
-      		console.log(this.id+' -- '+commandId);
+      		console.log('Drone ID ' + this.id+' is sending Code: '+commandId);
       		
       		$.ajax({
     				type: 'POST',
@@ -253,12 +253,9 @@ class WebSocketClient {
 
 
 
-
-      
-      
       var dronesCount = 0;
       var dronesAll = new Map();
-      
+
       var activeDrone;
       
       var droneSpeed = 5;
@@ -284,6 +281,46 @@ class WebSocketClient {
         });
         
         setInterval( updateSystemData, 1000);
+
+        document.addEventListener('keyup', function(event) {
+			  console.log('-'+event.key+'-');
+
+			  if(event.key === '4') {
+				  activeDrone.sendCommand(CommandType.RLEFT);
+			  }
+			  else if(event.key === '6') {
+				  activeDrone.sendCommand(CommandType.RRIGHT);
+			  }
+
+			  else if(event.key === '8') {
+				  activeDrone.sendCommand(CommandType.CAMERA_UP);
+			  }else if(event.key === '2') {
+				  activeDrone.sendCommand(CommandType.CAMERA_DOWN);
+			  }
+
+			  else if(event.key === 'w') {
+				  activeDrone.sendCommand(CommandType.FORWARD);
+			  }else if(event.key === 's') {
+				  activeDrone.sendCommand(CommandType.BACKWARD);
+			  }else if(event.key === 'a') {
+				  activeDrone.sendCommand(CommandType.MLEFT);
+			  }else if(event.key === 'd') {
+				  activeDrone.sendCommand(CommandType.MRIGHT);
+			  }
+
+			  else if(event.key === 'q') {
+				  activeDrone.sendCommand(CommandType.UP);
+			  }else if(event.key === 'e') {
+				  activeDrone.sendCommand(CommandType.DOWN);
+			  }
+
+			  else if(event.key === 'Enter') {
+				  console.log('DROP was pressed');
+			  }else if(event.key === ' ') {
+				  activeDrone.sendCommand(CommandType.CANCEL_XMOVE);
+				  activeDrone.sendCommand(CommandType.CANCEL_ZMOVE);
+			  }
+		  });
       }
       
       function addMarker(location, map) {
@@ -454,7 +491,7 @@ class WebSocketClient {
     	  			    '</div>'+ 
     	  			    
     	  			    '<div id="ctrlPanel7" style="position: absolute; top: 30px;right:30px;">' + 
-    	  			    '<input class="button" id="fKill'+drone.getId()+'" type="button" value="KILL MOTORS"  style="width:133px;background-color:red;opacity:0.55;"/>' +
+    	  			    '<input class="button" id="fKill'+drone.getId()+'" type="button" value="KILL MOTORS"  style="width:133px;background-color:#ff0000;opacity:0.55;"/>' +
     	  			    '</div>'+ 
     	  			    
     	  			    '</div>');
