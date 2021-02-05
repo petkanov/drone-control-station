@@ -35,7 +35,7 @@ public class HomeController {
 	@GetMapping("/")
 	public String commandCenter(Model model) {
 		
-		model.addAttribute("localIp", getGlobalIpAddress());
+		model.addAttribute("publicIp", getPublicIpAddress());
 		
 		// <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAKvdklCWlOEBirFt_qu5Wy2EMjKwz0EXo">
 		
@@ -45,7 +45,7 @@ public class HomeController {
 	@GetMapping("/v/{droneId}")
 	public String getVideoFeed(Model model, @PathVariable("droneId") String droneId) {
 		
-		model.addAttribute("localIp", getGlobalIpAddress());
+		model.addAttribute("publicIp", getPublicIpAddress());
 		model.addAttribute("droneId", droneId);
 		
 		return "video";
@@ -111,7 +111,7 @@ public class HomeController {
 		}
 	}
 	
-	private String getGlobalIpAddress() {
+	private String getPublicIpAddress() {
 		String ip = "";
 		try {
 			final URL whatismyip = new URL("http://checkip.amazonaws.com");

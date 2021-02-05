@@ -6,73 +6,21 @@
 <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
 
 <link rel="stylesheet" type="text/css" href="/css/main.css" />
+<script type="text/javascript" src="/js/main.js"></script>
 
-<script th:inline="javascript"> 
-class WebSocketClient {
-    
-    constructor(droneId, hostname, port, endpoint) {
-        this.droneId = droneId;
-        this.webSocket = null;
-        this.hostname = hostname;
-        this.port     = port;
-        this.endpoint = endpoint;
-    }
-    
-    getServerUrl() {
-        return "ws://"+this.hostname+":" + this.port + this.endpoint;
-    }
-    
-    connect() {
-    	this.disconnect();
-    	
-        this.webSocket = new WebSocket( this.getServerUrl() );
+<script th:inline="javascript">
 
-        var activeDroneId = this.droneId;
-
-        this.webSocket.onopen = function(event) {
-            console.log('Requesting Video Stream For Drone ID ' + activeDroneId);
-            this.send(activeDroneId);
-        }
-            
-        this.webSocket.onmessage = function(event) {
-		   var msg = "data:image/jpg;base64,"+event.data+"";
-  		   $('#video').attr("src", msg);
-        }
-    }
-    
-    getStatus() {
-        return this.webSocket.readyState;
-    }
-    
-    send(message) {
-        if (this.webSocket != null && this.webSocket.readyState == WebSocket.OPEN) {
-            this.webSocket.send(message);
-        } 
-    }
-    
-    disconnect() {
-        if (this.webSocket != null) {
-            this.webSocket.close();
-        } 
-    }
-}
-
-const localIp = [[${localIp}]];
+const publicIp = [[${publicIp}]];
 const droneId = [[${droneId}]];
 
-const videoSocket = new WebSocketClient(droneId, localIp, 80, "/videofeed");
-  
-videoSocket.connect();  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+const videoSocket = new WebSocketClient(droneId, publicIp, 80, "/videofeed");
+videoSocket.connect(); 
 
+$(document).ready(function(){
+  $("img").attr("id","video" + droneId);
+});
+
+  
 </script> 
 
 <title>ODAFA - Operate Drones Anywhere From Anywhere</title> 
@@ -80,21 +28,7 @@ videoSocket.connect();
 </head>
 
 <body>
-     <img id="video" src="video.jpg" style="width: 100%;"  onclick="videoSocket.connect();" >
+     <img src="video.jpg" style="width: 100%;"  onclick="videoSocket.connect();" >
 </body>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 </html>

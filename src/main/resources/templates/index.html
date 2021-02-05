@@ -5,28 +5,13 @@
 <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
 <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
 
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAKvdklCWlOEBirFt_qu5Wy2EMjKwz0EXo"></script>
+<script type="text/javascript" src="/js/main.js"></script>
+
 <link rel="stylesheet" type="text/css" href="/css/main.css" />
 
-<script th:inline="javascript"> 
-(function() {
-    var ga = document.createElement('script'); 
-    ga.type = 'text/javascript'; 
-    ga.async = false;
-    ga.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyAKvdklCWlOEBirFt_qu5Wy2EMjKwz0EXo';
-    var s = document.getElementsByTagName('script')[0]; 
-    s.parentNode.insertBefore(ga, s);
-
-    ga = document.createElement('script'); 
-    ga.type = 'text/javascript'; 
-    ga.async = false;
-    ga.src = '/js/main.js';
-    s = document.getElementsByTagName('script')[0]; 
-    s.parentNode.insertBefore(ga, s);
-    
-  })();
-  const localIp = [[${localIp}]];
-
-
+<script th:inline="javascript">  
+  const publicIp = [[${publicIp}]];
 </script> 
 
 <title>ODAFA - Operate Drones Anywhere From Anywhere</title> 
